@@ -36,3 +36,35 @@
     transform: rotate(360deg);
   }
 }
+.parent-div{
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  border: 3px solid #018B97;
+  margin: 30px;
+  border-radius: 10px;
+
+}
+
+.left-div{
+  border-right: 3px solid #018B97 ;
+  margin: 30px 0;
+}
+.right-div{
+  text-align: center;
+}
+.form-div{
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+
+}
+ input{
+  width: 100%;
+  border: 2px solid #018B97;
+  margin: 10px;
+  line-height: 30px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 700;
+  padding: 2px;
+}
