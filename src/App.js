@@ -1,4 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification} from "firebase/auth";
 import './App.css';
 import image1 from '../src/images/authentication.png'
 import initializationFirebase from './Firebase/firebase.initialize';
@@ -33,7 +33,9 @@ function App() {
       .then((result) => {
 
         const user = result.user;
-        console.log("Registered",user)
+        console.log("Registered", user)
+        setError('')
+        varificationMail()
       }).catch((error) => {
         setError(error.message);
       })
@@ -43,11 +45,12 @@ function App() {
       .then((result) => {
         // Signed in 
         const user = result.user;
-        console.log("Logged in",user)
+        console.log("Logged in", user)
+        setError('')
         // ...
       })
       .catch((error) => {
-       setError(error.message);
+        setError(error.message);
       });
   }
 
@@ -59,6 +62,13 @@ function App() {
   }
   const checkBoxHandler = (event) => {
     setIsLogIn(event.target.checked)
+  }
+  const varificationMail = () => {
+    
+    sendEmailVerification(auth.currentUser)
+      .then((result) => {
+        console.log(result);
+      });
   }
 
   return (
