@@ -1,4 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import './App.css';
 import image1 from '../src/images/authentication.png'
 import initializationFirebase from './Firebase/firebase.initialize';
@@ -10,10 +10,11 @@ function App() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [isLogIn, setIsLogIn] = useState(false)
   const SubmitHandler = (e) => {
     e.preventDefault()
-   
-    if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
+
+    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       setError('Email Formation is not Correct')
       return
     }
@@ -24,19 +25,40 @@ function App() {
     else {
       setError('')
     }
+    isLogIn ? logInUser(email, password) : createNewUser(email, password)
+
+  }
+  const createNewUser = (email, password) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
 
         const user = result.user;
-        console.log(user)
+        console.log("Registered",user)
+      }).catch((error) => {
+        setError(error.message);
       })
-
   }
+  const logInUser = (emai, password) => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        // Signed in 
+        const user = result.user;
+        console.log("Logged in",user)
+        // ...
+      })
+      .catch((error) => {
+       setError(error.message);
+      });
+  }
+
   const emailHandler = (event) => {
     setEmail(event.target.value)
   }
   const passwordHandler = (event) => {
     setPassword(event.target.value)
+  }
+  const checkBoxHandler = (event) => {
+    setIsLogIn(event.target.checked)
   }
 
   return (
@@ -49,6 +71,9 @@ function App() {
         <h1 style={{ marginTop: '90px', fontWeight: '800', color: "#018B97" }}> User Authentication</h1>
         <div className='form-div'>
           <div>
+            {/* Here Toggle is working For Log in or Register  */}
+            <h4 style={{ color: "#018B97", fontWeight: "700" }}>Please {isLogIn ? "Log In" : "Register"}</h4>
+            {/* Toggle completed  */}
             <form onSubmit={SubmitHandler}>
               <input onBlur={emailHandler} type="text" placeholder="Email" required />
               <input onBlur={passwordHandler} type="password" placeholder="Password" required />
@@ -60,10 +85,21 @@ function App() {
                 }
 
               </div>
-              <input style={{ marginTop: '10px', backgroundColor: '#018B97', color: 'white' }} type="submit" value='Register' />
+              <input style={{ marginTop: '10px', backgroundColor: '#018B97', color: 'white' }} type="submit" value={isLogIn ? 'Log In' : 'Register'} />
             </form>
+            <div className='mt-4 text-info fw-bold'>
+              <div className="form-check">
+                <input onChange={checkBoxHandler} className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                <label className="form-check-label" htmlFor="flexCheckDefault">
+                  Click Here For Log In
+                </label>
+              </div>
+            </div>
+
+
           </div>
         </div>
+
       </div>
     </div>
   );
