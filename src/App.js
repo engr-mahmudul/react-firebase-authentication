@@ -1,4 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification} from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail} from "firebase/auth";
 import './App.css';
 import image1 from '../src/images/authentication.png'
 import initializationFirebase from './Firebase/firebase.initialize';
@@ -70,6 +70,22 @@ function App() {
         console.log(result);
       });
   }
+  const passwordResetMail= () =>{
+    if(!email){
+      setError('Put an email Adress First')
+      return
+    }
+    else{
+      setError('')
+    }
+
+    sendPasswordResetEmail(auth, email)
+  .then(() => {
+    // Password reset email sent!
+    // ..
+  })
+  }
+
 
   return (
     <div className="parent-div">
@@ -85,8 +101,8 @@ function App() {
             <h4 style={{ color: "#018B97", fontWeight: "700" }}>Please {isLogIn ? "Log In" : "Register"}</h4>
             {/* Toggle completed  */}
             <form onSubmit={SubmitHandler}>
-              <input onBlur={emailHandler} type="text" placeholder="Email" required />
-              <input onBlur={passwordHandler} type="password" placeholder="Password" required />
+              <input onBlur={emailHandler} type="text" placeholder="Email"  />
+              <input onBlur={passwordHandler} type="password" placeholder="Password"  />
               <div className='error-div'>
                 {
                   error.length > 0 && <div className='error-message'>
@@ -96,16 +112,19 @@ function App() {
 
               </div>
               <input style={{ marginTop: '10px', backgroundColor: '#018B97', color: 'white' }} type="submit" value={isLogIn ? 'Log In' : 'Register'} />
-            </form>
-            <div className='mt-4 text-info fw-bold'>
+              <div className='mt-4 text-info fw-bold'>
               <div className="form-check">
                 <input onChange={checkBoxHandler} className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
                 <label className="form-check-label" htmlFor="flexCheckDefault">
                   Click Here For Log In
                 </label>
+                
               </div>
             </div>
-
+             
+            </form>
+            
+            <button className='btn' onClick={passwordResetMail}>Forgot password?</button>
 
           </div>
         </div>
