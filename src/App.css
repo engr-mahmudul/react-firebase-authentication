@@ -53,13 +53,15 @@
   text-align: center;
 }
 .form-div{
+  width: 100%;
   display: flex;
   justify-content: center;
   margin-top: 50px;
 
+
 }
  input{
-  width: 100%;
+  width: 95%;
   border: 2px solid #018B97;
   margin: 10px;
   line-height: 30px;
@@ -67,4 +69,13 @@
   text-align: center;
   font-weight: 700;
   padding: 2px;
+}
+.error-div{
+  display: flex;
+  justify-content: center;
+
+}
+.error-message{
+  color: red;
+  
 }
