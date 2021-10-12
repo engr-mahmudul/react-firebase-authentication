@@ -1,4 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail} from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, updateProfile } from "firebase/auth";
 import './App.css';
 import image1 from '../src/images/authentication.png'
 import initializationFirebase from './Firebase/firebase.initialize';
@@ -7,6 +7,7 @@ initializationFirebase()
 const auth = getAuth();
 
 function App() {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -35,10 +36,19 @@ function App() {
         const user = result.user;
         console.log("Registered", user)
         setError('')
+        
         varificationMail()
+        setUserName()
       }).catch((error) => {
         setError(error.message);
       })
+  }
+  const setUserName = () => {
+    updateProfile(auth.currentUser, {
+      displayName: name})
+      .then((result) => {
+      // console.log(result)
+    })
   }
   const logInUser = (emai, password) => {
     signInWithEmailAndPassword(auth, email, password)
@@ -53,7 +63,9 @@ function App() {
         setError(error.message);
       });
   }
-
+  const nameHandler = (event) => {
+    setName(event.target.value)
+  }
   const emailHandler = (event) => {
     setEmail(event.target.value)
   }
@@ -64,26 +76,26 @@ function App() {
     setIsLogIn(event.target.checked)
   }
   const varificationMail = () => {
-    
+
     sendEmailVerification(auth.currentUser)
       .then((result) => {
         console.log(result);
       });
   }
-  const passwordResetMail= () =>{
-    if(!email){
+  const passwordResetMail = () => {
+    if (!email) {
       setError('Put an email Adress First')
       return
     }
-    else{
+    else {
       setError('')
     }
 
     sendPasswordResetEmail(auth, email)
-  .then(() => {
-    // Password reset email sent!
-    // ..
-  })
+      .then(() => {
+        // Password reset email sent!
+        // ..
+      })
   }
 
 
@@ -101,8 +113,13 @@ function App() {
             <h4 style={{ color: "#018B97", fontWeight: "700" }}>Please {isLogIn ? "Log In" : "Register"}</h4>
             {/* Toggle completed  */}
             <form onSubmit={SubmitHandler}>
-              <input onBlur={emailHandler} type="text" placeholder="Email"  />
-              <input onBlur={passwordHandler} type="password" placeholder="Password"  />
+              {
+                !isLogIn && <div>
+                  <input onBlur={nameHandler} type="text" placeholder="Name" />
+                </div>
+              }
+              <input onBlur={emailHandler} type="text" placeholder="Email" />
+              <input onBlur={passwordHandler} type="password" placeholder="Password" />
               <div className='error-div'>
                 {
                   error.length > 0 && <div className='error-message'>
@@ -113,17 +130,17 @@ function App() {
               </div>
               <input style={{ marginTop: '10px', backgroundColor: '#018B97', color: 'white' }} type="submit" value={isLogIn ? 'Log In' : 'Register'} />
               <div className='mt-4 text-info fw-bold'>
-              <div className="form-check">
-                <input onChange={checkBoxHandler} className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                <label className="form-check-label" htmlFor="flexCheckDefault">
-                  Click Here For Log In
-                </label>
-                
+                <div className="form-check">
+                  <input onChange={checkBoxHandler} className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                  <label className="form-check-label" htmlFor="flexCheckDefault">
+                    Click Here For Log In
+                  </label>
+
+                </div>
               </div>
-            </div>
-             
+
             </form>
-            
+
             <button className='btn' onClick={passwordResetMail}>Forgot password?</button>
 
           </div>
